@@ -17,5 +17,6 @@ namespace JustNotes.WPF.Models
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public string FileLocation { get; set; }
+        public string Content { get; set; }
     }
 }

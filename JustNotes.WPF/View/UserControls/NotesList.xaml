@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="JustNotes.WPF.View.UserControls.NotesList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:JustNotes.WPF.View.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300">
+    <Grid>
+        <StackPanel Margin="5">
+            <TextBlock Text="{Binding Title}" Foreground="White" FontSize="15" />
+            <TextBlock Text="{Binding UpdatedDate}" Foreground="LightGray" FontSize="8"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

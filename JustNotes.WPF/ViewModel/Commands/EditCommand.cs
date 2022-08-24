@@ -7,12 +7,13 @@ using System.Windows.Input;
 
 namespace JustNotes.WPF.ViewModel.Commands
 {
-    public class NewNoteCommand : ICommand
+    public class EditCommand : ICommand
     {
-        public NotesViewModel VM { get; set; }
         public event EventHandler CanExecuteChanged;
 
-        public NewNoteCommand(NotesViewModel vm)
+        public NotesViewModel VM { get; set; }
+
+        public EditCommand(NotesViewModel vm)
         {
             VM = vm;
         }
@@ -24,7 +25,7 @@ namespace JustNotes.WPF.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            VM.NewNote(1);
+            VM.StartEditing();
         }
     }
 }

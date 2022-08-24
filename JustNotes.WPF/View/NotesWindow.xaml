@@ -3,10 +3,76 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:JustNotes.WPF.View"
+        xmlns:local="clr-namespace:JustNotes.WPF.View" xmlns:vm="clr-namespace:JustNotes.WPF.ViewModel"
+        xmlns:uc="clr-namespace:JustNotes.WPF.View.UserControls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="NotesWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="JustNotes" Height="450" Width="800">
+    <Window.Resources>
+        <vm:NotesViewModel x:Key="vm" />
+    </Window.Resources>
+    <DockPanel DataContext="{StaticResource vm}">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New Note" Command="{Binding NewNoteCommand}"/>
+                <Separator />
+                <MenuItem Header="Exit" Click="MenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar DockPanel.Dock="Bottom" Background="#111213" Foreground="White" BorderThickness="0">
+            <StatusBarItem>
+                <TextBlock x:Name="statusTextBlock"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="statusLastUpdated" Text="Last Updated:" />
+            </StatusBarItem>
+        </StatusBar>
+        <ListView DockPanel.Dock="Left" Width="140" ItemsSource="{Binding Notes}" SelectedValue="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="#212224" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <uc:NotesList Note="{Binding}">
+                                <uc:NotesList.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Rename" Command="{Binding Source={StaticResource vm}, Path=EditCommand}"/>
+                                        <MenuItem Header="Delete"/>
+                                    </ContextMenu>
+                                </uc:NotesList.ContextMenu>
+                            </uc:NotesList>
+                            <TextBox Text="{Binding Title, Mode=TwoWay}" 
+                                     Visibility="{Binding Source={StaticResource vm}, Path=IsVisible}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="LostFocus">
+                                        <i:InvokeCommandAction Command="{Binding Source={StaticResource vm}, Path=CommitEditCommand}" CommandParameter="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+        </ListView>
+
+
+        <ToolBarTray DockPanel.Dock="Top" Background="#212224" ToolBar.OverflowMode="Never">
+            <ToolBar Background="#212224" ToolBarTray.IsLocked="True">
+                <ToggleButton x:Name="boldToggle" Click="boldToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
+                    <TextBlock Text="B" FontWeight="Bold" Background="#A1A1A1"/>
+                </ToggleButton>
+                <ToggleButton x:Name="italicToggle" Click="italicToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
+                    <TextBlock Text="I" FontStyle="Italic"/>
+                </ToggleButton>
+                <ToggleButton x:Name="underlineToggle" Click="underlineToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
+                    <TextBlock Text="U" TextDecorations="Underline"/>
+                </ToggleButton>
+                <ComboBox x:Name="fontFamilyComboBox" Width="100" SelectionChanged="fontFamilyComboBox_SelectionChanged" ToolBar.OverflowMode="Never"/>
+                <ComboBox x:Name="fontSizeComboBox" Width="50" IsEditable="True" TextBoxBase.TextChanged="fontSizeComboBox_TextChanged" ToolBar.OverflowMode="Never"/>
+                <Button x:Name="saveNoteButton" Content="Save" Click="saveNoteButton_Click" Background="#A1A1A1" HorizontalAlignment="Right" ToolBar.OverflowMode="Never"/>
+            </ToolBar>
+            </ToolBarTray>
+
+        <RichTextBox x:Name="rtbNote" TextChanged="rtb_TextChanged" SelectionChanged="rtbNote_SelectionChanged" Background="#111213" Foreground="White" BorderThickness="0"/>
+
+
+
+    </DockPanel>
 </Window>

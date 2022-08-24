@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JustNotes.WPF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +8,13 @@ using System.Windows.Input;
 
 namespace JustNotes.WPF.ViewModel.Commands
 {
-    public class NewNoteCommand : ICommand
+    public class CommitEditCommand : ICommand
     {
-        public NotesViewModel VM { get; set; }
         public event EventHandler CanExecuteChanged;
 
-        public NewNoteCommand(NotesViewModel vm)
+        public NotesViewModel VM { get; set; }
+
+        public CommitEditCommand(NotesViewModel vm)
         {
             VM = vm;
         }
@@ -24,7 +26,8 @@ namespace JustNotes.WPF.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            VM.NewNote(1);
+            Note note = parameter as Note;
+            if(note != null) VM.StopEditing(note);
         }
     }
 }
