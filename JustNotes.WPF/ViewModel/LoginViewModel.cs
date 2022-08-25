@@ -18,10 +18,114 @@ namespace JustNotes.WPF.ViewModel
 		public User User
 		{
 			get { return user; }
-			set { user = value; }
+			set 
+			{ 
+				user = value;
+				OnPropertyChanged("User");
+			}
 		}
 
-		private Visibility loginVisibility;
+		private string userName;
+
+		public string Username
+		{
+			get { return userName; }
+			set 
+			{ 
+				userName = value;
+				User = new User
+				{
+					Username = userName,
+					Password = this.Password,
+					Email = this.Email,
+					FirstName = this.FirstName,
+                    LastName = this.LastName,
+				};
+                OnPropertyChanged("Username");
+            }
+		}
+
+		private string password;
+
+		public string Password
+		{
+			get { return password; }
+			set 
+			{ 
+				password = value;
+                User = new User
+                {
+                    Username = this.Username,
+                    Password = password,
+					Email = this.Email,
+					FirstName = this.FirstName,
+                    LastName = this.LastName,
+                };
+                OnPropertyChanged("Password");
+            }
+		}
+
+        private string email;
+
+        public string Email
+        {
+            get { return email; }
+            set
+            {
+                email = value;
+                User = new User
+                {
+                    Username = this.Username,
+                    Password = this.Password,
+					Email = email,
+					FirstName = this.FirstName,
+                    LastName = this.LastName,
+                };
+                OnPropertyChanged("Email");
+            }
+        }
+
+        private string firstName;
+
+        public string FirstName
+        {
+            get { return firstName; }
+            set
+            {
+                firstName = value;
+                User = new User
+                {
+                    Username = this.Username,
+                    Password = this.Password,
+                    Email = this.Email,
+					FirstName = firstName,
+                    LastName = this.LastName,
+                };
+                OnPropertyChanged("FirstName");
+            }
+        }
+
+        private string lastName;
+
+        public string LastName
+        {
+            get { return lastName; }
+            set
+            {
+                lastName = value;
+                User = new User
+                {
+                    Username = this.Username,
+                    Password = this.Password,
+                    Email = this.Email,
+                    FirstName = this.FirstName,
+                    LastName = lastName
+                };
+                OnPropertyChanged("LastName");
+            }
+        }
+
+        private Visibility loginVisibility;
 
 		public Visibility LoginVisibility
 		{
@@ -59,6 +163,8 @@ namespace JustNotes.WPF.ViewModel
 			RegisterCommand = new RegisterCommand(this);
 			LoginCommand = new LoginCommand(this);
 			ShowRegisterCommand = new ShowRegisterCommand(this);
+
+			User = new User();
 		}
 
 		public void SwitchViews()
@@ -74,6 +180,16 @@ namespace JustNotes.WPF.ViewModel
                 RegisterVisibility = Visibility.Collapsed;
                 LoginVisibility = Visibility.Visible;
             }
+		}
+
+		public void Login()
+		{
+			//TODO: Login
+		}
+
+		public void Register()
+		{
+			//TODO: Register
 		}
 
         public event PropertyChangedEventHandler PropertyChanged;

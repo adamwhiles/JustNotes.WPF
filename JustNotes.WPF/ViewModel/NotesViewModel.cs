@@ -74,7 +74,7 @@ namespace JustNotes.WPF.ViewModel
 			GetNotes();
 		}
 
-		private void GetNotes()
+		public void GetNotes()
 		{
 			var notes = DBHelper.Read<Note>().Where(n => n.UserId == 1);
 			Notes.Clear();

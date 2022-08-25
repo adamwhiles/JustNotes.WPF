@@ -40,6 +40,20 @@ namespace JustNotes.WPF.View
             
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            if (string.IsNullOrEmpty(App.UserId))
+            {
+                LoginWindow loginWindow = new LoginWindow();
+                loginWindow.Topmost = true;
+                loginWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                loginWindow.ShowDialog();
+
+                vm.GetNotes();
+            }
+        }
+
         private void vm_SelectedNoteChanged(object sender, EventArgs e)
         {
             if (vm.SelectedNote != null)
