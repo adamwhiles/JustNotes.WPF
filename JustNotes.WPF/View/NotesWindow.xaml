@@ -12,7 +12,7 @@
         <vm:NotesViewModel x:Key="vm" />
     </Window.Resources>
     <DockPanel DataContext="{StaticResource vm}">
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Background="#2f71e8">
             <MenuItem Header="File">
                 <MenuItem Header="New Note" Command="{Binding NewNoteCommand}"/>
                 <Separator />
@@ -27,6 +27,7 @@
                 <TextBlock x:Name="statusLastUpdated" Text="Last Updated:" />
             </StatusBarItem>
         </StatusBar>
+
         <ListView DockPanel.Dock="Left" Width="140" ItemsSource="{Binding Notes}" SelectedValue="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="#212224" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -52,27 +53,32 @@
                 </ListView.ItemTemplate>
         </ListView>
 
-
-        <ToolBarTray DockPanel.Dock="Top" Background="#212224" ToolBar.OverflowMode="Never">
-            <ToolBar Background="#212224" ToolBarTray.IsLocked="True">
-                <ToggleButton x:Name="boldToggle" Click="boldToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
-                    <TextBlock Text="B" FontWeight="Bold" Background="#A1A1A1"/>
+        <Grid  Background="#111213">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*"  />
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Background="#111213" Margin="3 5">
+                <ToggleButton x:Name="boldToggle" Click="boldToggle_Click" Background="#A1A1A1">
+                    <TextBlock Text="B" FontWeight="Bold" Background="#A1A1A1" Margin="3"/>
                 </ToggleButton>
-                <ToggleButton x:Name="italicToggle" Click="italicToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
-                    <TextBlock Text="I" FontStyle="Italic"/>
+                <ToggleButton x:Name="italicToggle" Click="italicToggle_Click" Background="#A1A1A1">
+                    <TextBlock Text="I" FontStyle="Italic" Margin="3"/>
                 </ToggleButton>
-                <ToggleButton x:Name="underlineToggle" Click="underlineToggle_Click" Background="#A1A1A1" ToolBar.OverflowMode="Never">
-                    <TextBlock Text="U" TextDecorations="Underline"/>
+                <ToggleButton x:Name="underlineToggle" Click="underlineToggle_Click" Background="#A1A1A1">
+                    <TextBlock Text="U" TextDecorations="Underline" Margin="3"/>
                 </ToggleButton>
-                <ComboBox x:Name="fontFamilyComboBox" Width="100" SelectionChanged="fontFamilyComboBox_SelectionChanged" ToolBar.OverflowMode="Never"/>
-                <ComboBox x:Name="fontSizeComboBox" Width="50" IsEditable="True" TextBoxBase.TextChanged="fontSizeComboBox_TextChanged" ToolBar.OverflowMode="Never"/>
-                <Button x:Name="saveNoteButton" Content="Save" Click="saveNoteButton_Click" Background="#A1A1A1" HorizontalAlignment="Right" ToolBar.OverflowMode="Never"/>
-            </ToolBar>
-            </ToolBarTray>
+                <ComboBox x:Name="fontFamilyComboBox" Width="100" SelectionChanged="fontFamilyComboBox_SelectionChanged" Margin="10 0" VerticalContentAlignment="Center" Background="#212224"/>
+                <ComboBox x:Name="fontSizeComboBox" Width="50" IsEditable="True" TextBoxBase.TextChanged="fontSizeComboBox_TextChanged" Margin="10 0" VerticalContentAlignment="Center" Background="#212224"/>
+                <Button x:Name="saveNoteButton" Click="saveNoteButton_Click" Background="#A1A1A1" HorizontalAlignment="Right">
+                    <TextBlock Text="Save" Padding="10 3"/>
+                </Button>
+            </StackPanel>
 
-        <RichTextBox x:Name="rtbNote" TextChanged="rtb_TextChanged" SelectionChanged="rtbNote_SelectionChanged" Background="#111213" Foreground="White" BorderThickness="0"/>
 
+        <RichTextBox Grid.Row="1" x:Name="rtbNote" TextChanged="rtb_TextChanged" SelectionChanged="rtbNote_SelectionChanged" Background="#111213" Foreground="White" BorderThickness="0"/>
 
+        </Grid>
 
     </DockPanel>
 </Window>

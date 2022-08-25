@@ -59,9 +59,6 @@ namespace JustNotes.WPF.ViewModel
 			IsVisible = Visibility.Collapsed;
 
 			GetNotes();
-			SelectedNote = Notes.FirstOrDefault<Note>();
-            OnPropertyChanged("SelectedNote");
-            SelectedNoteChanged?.Invoke(this, EventArgs.Empty);
         }
 		
 		public void NewNote(int userId)
@@ -86,7 +83,7 @@ namespace JustNotes.WPF.ViewModel
 			{
 				Notes.Add(note);
 			}
-		}
+        }
 
 		private void OnPropertyChanged(string propertyName)
 		{

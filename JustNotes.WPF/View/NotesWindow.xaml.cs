@@ -37,6 +37,7 @@ namespace JustNotes.WPF.View
 
             List<double> fontSizes = new List<double>() { 8,9,10,11,12,14,16,28,48,72};
             fontSizeComboBox.ItemsSource = fontSizes;
+            
         }
 
         private void vm_SelectedNoteChanged(object sender, EventArgs e)
