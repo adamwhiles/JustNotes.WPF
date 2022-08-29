@@ -1,8 +1,12 @@
-﻿using SQLite;
+﻿using JustNotes.WPF.Models;
+using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,60 +15,95 @@ namespace JustNotes.WPF.ViewModel.Helpers
     public class DBHelper
     {
         private static string dbFile = Path.Combine(Environment.CurrentDirectory, "justnotesDB.db3");
+        private static string API_KEY = ConfigurationManager.AppSettings.Get("fireBaseApiKey");
+        private static string dbPath = ConfigurationManager.AppSettings.Get("fireBaseDb");
 
-        public static bool Insert<T>(T item)
+        public static async Task<bool> Insert<T>(T item)
         {
-            bool result = false;
+            var body = JsonConvert.SerializeObject(item);
+            var content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            using(SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using(var client = new HttpClient())
             {
-                conn.CreateTable<T>();
-                int rows = conn.Insert(item);
-                if (rows > 0) result = true;
-            }
+                var result = await client.PostAsync($"{dbPath}{item.GetType().Name.ToLower()}.json", content);
 
-            return result;
+                if(result.IsSuccessStatusCode)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            }
         }
 
-        public static bool Update<T>(T item)
+        public static async Task<bool> Update<T>(T item) where T : HasId
         {
-            bool result = false;
+            var body = JsonConvert.SerializeObject(item);
+            var content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (var client = new HttpClient())
             {
-                conn.CreateTable<T>();
-                int rows = conn.Update(item);
-                if (rows > 0) result = true;
-            }
+                var result = await client.PutAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json", content);
 
-            return result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
-        public static bool Delete<T>(T item)
+        public static async Task<bool> Delete<T>(T item) where T : HasId
         {
-            bool result = false;
+            var body = JsonConvert.SerializeObject(item);
+            var content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+            using (var client = new HttpClient())
             {
-                conn.CreateTable<T>();
-                int rows = conn.Delete(item);
-                if (rows > 0) result = true;
-            }
+                var result = await client.DeleteAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json");
 
-            return result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
-        public static List<T> Read<T>() where T : new()
+        public static async Task<List<T>> Read<T>() where T : HasId
         {
-            List<T> items;
+            List<T> items = new List<T>();
 
-            using (SQLiteConnection conn = new SQLiteConnection(dbFile))
+
+            using (var client = new HttpClient())
             {
-                conn.CreateTable<T>();
-                items = conn.Table<T>().ToList();
-            }
+                var result = await client.GetAsync($"{dbPath}{typeof(T).Name.ToLower()}.json");
+                var jsonResult = await result.Content.ReadAsStringAsync();                
 
-            return items;
+                if (result.IsSuccessStatusCode)
+                {
+                    var objects = JsonConvert.DeserializeObject<Dictionary<string, T>>(jsonResult);
+                    if (objects == null) return items;
+                    foreach(var o in objects)
+                    {
+                        o.Value.Id = o.Key;
+                        items.Add(o.Value);
+                    }
+
+                    return items;
+                }
+                else
+                {
+                    return items;
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using JustNotes.WPF.Models;
 using JustNotes.WPF.ViewModel.Commands;
+using JustNotes.WPF.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,26 +26,6 @@ namespace JustNotes.WPF.ViewModel
 			}
 		}
 
-		private string userName;
-
-		public string Username
-		{
-			get { return userName; }
-			set 
-			{ 
-				userName = value;
-				User = new User
-				{
-					Username = userName,
-					Password = this.Password,
-					Email = this.Email,
-					FirstName = this.FirstName,
-                    LastName = this.LastName,
-				};
-                OnPropertyChanged("Username");
-            }
-		}
-
 		private string password;
 
 		public string Password
@@ -55,7 +36,6 @@ namespace JustNotes.WPF.ViewModel
 				password = value;
                 User = new User
                 {
-                    Username = this.Username,
                     Password = password,
 					Email = this.Email,
 					FirstName = this.FirstName,
@@ -75,7 +55,6 @@ namespace JustNotes.WPF.ViewModel
                 email = value;
                 User = new User
                 {
-                    Username = this.Username,
                     Password = this.Password,
 					Email = email,
 					FirstName = this.FirstName,
@@ -95,7 +74,6 @@ namespace JustNotes.WPF.ViewModel
                 firstName = value;
                 User = new User
                 {
-                    Username = this.Username,
                     Password = this.Password,
                     Email = this.Email,
 					FirstName = firstName,
@@ -115,7 +93,6 @@ namespace JustNotes.WPF.ViewModel
                 lastName = value;
                 User = new User
                 {
-                    Username = this.Username,
                     Password = this.Password,
                     Email = this.Email,
                     FirstName = this.FirstName,
@@ -182,17 +159,26 @@ namespace JustNotes.WPF.ViewModel
             }
 		}
 
-		public void Login()
+		public async void Login()
 		{
-			//TODO: Login
+            bool result = await AuthHepler.Login(User);
+            if (result)
+            {
+                Authenticated?.Invoke(this, new EventArgs());
+            }
 		}
 
-		public void Register()
+		public async void Register()
 		{
-			//TODO: Register
+            bool result = await AuthHepler.Register(User);
+            if (result)
+            {
+                Authenticated?.Invoke(this, new EventArgs());
+            }
 		}
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler Authenticated;
 
         public void OnPropertyChanged(string propertyName)
         {

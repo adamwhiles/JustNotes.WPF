@@ -21,6 +21,7 @@ namespace JustNotes.WPF.ViewModel
         public NewNoteCommand NewNoteCommand { get; set; }
         public EditCommand EditCommand { get; set; }
         public CommitEditCommand CommitEditCommand { get; set; }
+		public DeleteCommand DeleteCommand { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,6 +54,7 @@ namespace JustNotes.WPF.ViewModel
 			NewNoteCommand = new NewNoteCommand(this);
 			EditCommand = new EditCommand(this);
 			CommitEditCommand = new CommitEditCommand(this);
+			DeleteCommand = new DeleteCommand(this);
 
 			Notes = new ObservableCollection<Note>();
 
@@ -61,28 +63,43 @@ namespace JustNotes.WPF.ViewModel
 			GetNotes();
         }
 		
-		public void NewNote(int userId)
+		public async void NewNote(string userId)
 		{
 			Note note = new Note() {
-				UserId = userId,
+				UserId = App.UserId,
 				CreatedDate = DateTime.Now,
 				UpdatedDate = DateTime.Now,
 				Title = "New Note " + DateTime.Now
 			};
 
-			DBHelper.Insert(note);
-			GetNotes();
+			await DBHelper.Insert(note);
+			 await GetNotes();
 		}
 
-		public void GetNotes()
+		public async 
+		Task
+GetNotes(bool initialRequest = false, Note currentNote = null)
 		{
-			var notes = DBHelper.Read<Note>().Where(n => n.UserId == 1);
+			var notes = (await DBHelper.Read<Note>()).Where(n => n.UserId == App.UserId);
 			Notes.Clear();
 
 			foreach(Note note in notes)
 			{
 				Notes.Add(note);
 			}
+
+			if(initialRequest)
+			{
+                this.selectedNote = Notes.FirstOrDefault();
+                SelectedNoteChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+			if(currentNote != null)
+			{
+				this.selectedNote = currentNote;
+                SelectedNoteChanged?.Invoke(this, EventArgs.Empty);
+            }
+			
         }
 
 		private void OnPropertyChanged(string propertyName)
@@ -95,12 +112,18 @@ namespace JustNotes.WPF.ViewModel
 			IsVisible = Visibility.Visible;
 		}
 
-        public void StopEditing(Note note)
+        public async void StopEditing(Note note)
         {
             IsVisible = Visibility.Collapsed;
-			DBHelper.Update(note);
-			GetNotes();
+			await DBHelper.Update(note);
+			await GetNotes(currentNote: Notes.Single(n => n.Id == note.Id));
         }
+
+		public async void DeleteNote()
+		{
+			await DBHelper.Delete(selectedNote);
+			await GetNotes();
+		}
 
     }
 }

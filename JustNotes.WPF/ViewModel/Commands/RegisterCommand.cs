@@ -27,7 +27,6 @@ namespace JustNotes.WPF.ViewModel.Commands
             User user = parameter as User;
 
             if (user == null) return false;
-            if (string.IsNullOrEmpty(user.Username)) return false;
             if (string.IsNullOrEmpty(user.Password)) return false;
             if (string.IsNullOrEmpty(user.Email)) return false;
             if (string.IsNullOrEmpty(user.FirstName)) return false;

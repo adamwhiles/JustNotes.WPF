@@ -50,7 +50,7 @@ namespace JustNotes.WPF.View
                 loginWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 loginWindow.ShowDialog();
 
-                vm.GetNotes();
+                vm.GetNotes(initialRequest: true);
             }
         }
 
@@ -159,20 +159,22 @@ namespace JustNotes.WPF.View
             rtbNote.Selection.ApplyPropertyValue(Inline.FontSizeProperty, fontSizeComboBox.Text);
         }
 
-        private void saveNoteButton_Click(object sender, RoutedEventArgs e)
+        private async void saveNoteButton_Click(object sender, RoutedEventArgs e)
         {
             string rtbContent;
             var noteContent1 = new TextRange(rtbNote.Document.ContentStart, rtbNote.Document.ContentEnd);
+            var currentNote = vm.SelectedNote;
             using (MemoryStream ms = new MemoryStream())
             {
                 noteContent1.Save(ms, DataFormats.Rtf);
                 rtbContent = Encoding.ASCII.GetString(ms.ToArray());
                 vm.SelectedNote.Content = rtbContent;
                 vm.SelectedNote.UpdatedDate = DateTime.Now;
-                DBHelper.Update(vm.SelectedNote);
-                statusLastUpdated.Text = $"Last Updated {vm.SelectedNote.UpdatedDate}";
+                await DBHelper.Update(vm.SelectedNote);
+                statusLastUpdated.Text = $"Saved {vm.SelectedNote.UpdatedDate}";
                 ms.Close();
             }
+            await vm.GetNotes(currentNote: currentNote);
         }
     }
 }

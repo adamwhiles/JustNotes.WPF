@@ -36,7 +36,7 @@
                                 <uc:NotesList.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Rename" Command="{Binding Source={StaticResource vm}, Path=EditCommand}"/>
-                                        <MenuItem Header="Delete"/>
+                                    <MenuItem Header="Delete"  Command="{Binding Source={StaticResource vm}, Path=DeleteCommand}"/>
                                     </ContextMenu>
                                 </uc:NotesList.ContextMenu>
                             </uc:NotesList>

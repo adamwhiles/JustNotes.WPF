@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JustNotes.WPF.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,18 @@ namespace JustNotes.WPF.View
     /// </summary>
     public partial class LoginWindow : Window
     {
+        LoginViewModel VM;
         public LoginWindow()
         {
             InitializeComponent();
+            VM = Resources["vm"] as LoginViewModel;
+
+            VM.Authenticated += VM_Authenticated;
+        }
+
+        private void VM_Authenticated(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
