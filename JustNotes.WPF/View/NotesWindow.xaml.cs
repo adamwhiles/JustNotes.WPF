@@ -40,17 +40,17 @@ namespace JustNotes.WPF.View
             
         }
 
-        protected override void OnActivated(EventArgs e)
+        protected override async void OnActivated(EventArgs e)
         {
             base.OnActivated(e);
             if (string.IsNullOrEmpty(App.UserId))
             {
                 LoginWindow loginWindow = new LoginWindow();
                 loginWindow.Topmost = true;
-                loginWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                loginWindow.Owner = this;
                 loginWindow.ShowDialog();
 
-                vm.GetNotes(initialRequest: true);
+                await vm.GetNotes(initialRequest: true);
             }
         }
 
