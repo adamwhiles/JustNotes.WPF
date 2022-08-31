@@ -10,6 +10,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{88C517B6-0829-48B9-96FB-B4D142BDFA5D}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\OneDrive\Pictures\Screenshots\JustNotes1.jpg = ..\..\..\OneDrive\Pictures\Screenshots\JustNotes1.jpg
+		..\..\..\OneDrive\Pictures\Screenshots\JustNotes2.jpg = ..\..\..\OneDrive\Pictures\Screenshots\JustNotes2.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +29,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{88C517B6-0829-48B9-96FB-B4D142BDFA5D} = {3B10A80B-0DC8-418B-9590-32C9EE345166}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43C2E171-D5C3-4AED-B926-CD7BDF265603}
