@@ -14,8 +14,6 @@ namespace JustNotes.WPF.ViewModel.Helpers
 {
     public class DBHelper
     {
-        private static string dbFile = Path.Combine(Environment.CurrentDirectory, "justnotesDB.db3");
-        private static string API_KEY = ConfigurationManager.AppSettings.Get("fireBaseApiKey");
         private static string dbPath = ConfigurationManager.AppSettings.Get("fireBaseDb");
 
         public static async Task<bool> Insert<T>(T item)
@@ -25,7 +23,7 @@ namespace JustNotes.WPF.ViewModel.Helpers
 
             using(var client = new HttpClient())
             {
-                var result = await client.PostAsync($"{dbPath}{item.GetType().Name.ToLower()}.json", content);
+                var result = await client.PostAsync($"{dbPath}{item.GetType().Name.ToLower()}.json?auth={App.IdToken}", content);
 
                 if(result.IsSuccessStatusCode)
                 {
@@ -44,7 +42,7 @@ namespace JustNotes.WPF.ViewModel.Helpers
 
             using (var client = new HttpClient())
             {
-                var result = await client.PutAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json", content);
+                var result = await client.PutAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json?auth={App.IdToken}", content);
 
                 if (result.IsSuccessStatusCode)
                 {
@@ -64,7 +62,7 @@ namespace JustNotes.WPF.ViewModel.Helpers
 
             using (var client = new HttpClient())
             {
-                var result = await client.DeleteAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json");
+                var result = await client.DeleteAsync($"{dbPath}{item.GetType().Name.ToLower()}/{item.Id}.json?auth={App.IdToken}");
 
                 if (result.IsSuccessStatusCode)
                 {
@@ -81,29 +79,35 @@ namespace JustNotes.WPF.ViewModel.Helpers
         {
             List<T> items = new List<T>();
 
-
-            using (var client = new HttpClient())
+            if (App.UserId != String.Empty)
             {
-                var result = await client.GetAsync($"{dbPath}{typeof(T).Name.ToLower()}.json");
-                var jsonResult = await result.Content.ReadAsStringAsync();                
-
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    var objects = JsonConvert.DeserializeObject<Dictionary<string, T>>(jsonResult);
-                    if (objects == null) return items;
-                    foreach(var o in objects)
+                    var result = await client.GetAsync($"{dbPath}{typeof(T).Name.ToLower()}.json?auth={App.IdToken}");
+                    var jsonResult = await result.Content.ReadAsStringAsync();
+
+                    if (result.IsSuccessStatusCode)
                     {
-                        o.Value.Id = o.Key;
-                        items.Add(o.Value);
-                    }
+                        var objects = JsonConvert.DeserializeObject<Dictionary<string, T>>(jsonResult);
+                        if (objects == null) return items;
+                        foreach (var o in objects)
+                        {
+                            o.Value.Id = o.Key;
+                            items.Add(o.Value);
+                        }
 
-                    return items;
+                        return items;
+                    }
+                    else
+                    {
+                        return items;
+                    }
                 }
-                else
-                {
-                    return items;
-                }
+            } else
+            {
+                return items;
             }
+            
         }
     }
 }

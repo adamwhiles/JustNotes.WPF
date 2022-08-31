@@ -14,5 +14,6 @@ namespace JustNotes.WPF
     public partial class App : Application
     {
         public static string UserId = string.Empty;
+        public static string IdToken = string.Empty;
     }
 }

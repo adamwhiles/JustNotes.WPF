@@ -71,6 +71,7 @@ namespace JustNotes.WPF.ViewModel.Helpers
                     string resultJson = await response.Content.ReadAsStringAsync();
                     var result = JsonConvert.DeserializeObject<AuthResult>(resultJson);
                     App.UserId = result.localId;
+                    App.IdToken = result.idToken;
 
                     return true;
                 }
